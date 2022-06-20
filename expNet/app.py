@@ -2,6 +2,7 @@ import dash
 import dash_cytoscape as cyto
 from dash import html
 from dash import dcc
+from dash import dash_table
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 from sys import argv
@@ -15,141 +16,8 @@ app = dash.Dash(__name__)
 
 
 colors = get_colorscale('green', 'yellow', 'red')
-nodes, edges = read_data.main(argv[1], argv[2], argv[3], argv[4], colors) # expression_path, fas_path, sample_path, gene_id
+nodes, edges, gene_expression = read_data.main(argv[1], argv[2], argv[3], argv[4], colors) # expression_path, fas_path, sample_path, gene_id
 
-
-#nodes = {'Big1': {
-#         'A': [
-#               {
-#                   'data': {'id': '1', 'label': '1', 'size': 10, 'color': str(colors[int(round(0.0, 2)*50)]), 'blacken': 0},
-#                   'position': {'x': 0, 'y': 0},
-#               },
-#               {
-#                   'data': {'id': '2', 'label': '2', 'size': 20, 'color': str(colors[int(round(0.1, 2)*50)]), 'blacken': 0.5},
-#                   'position': {'x': 10, 'y': 10},
-#               },
-#               {
-#                   'data': {'id': '3', 'label': '3', 'size': 40, 'color': str(colors[int(round(0.5, 2)*50)]), 'blacken': 1},
-#                   'position': {'x': 20, 'y': 20},
-#               },
-#               {
-#                   'data': {'id': '4', 'label': '4', 'size': 50, 'color': str(colors[int(round(0.7, 2)*50)])},
-#                   'position': {'x': 40, 'y': 40},
-#               },
-#               {
-#                   'data': {'id': '5', 'label': '5', 'size': 60, 'color': str(colors[int(round(1.0, 2)*50)])},
-#                   'position': {'x': 70, 'y': 70},
-#               }
-#              ],
-#         'B': [
-#               {
-#                   'data': {'id': '1', 'label': '1', 'size': 10, 'color': 'green'},
-#                   'position': {'x': 0, 'y': 0},
-#               },
-#               {
-#                   'data': {'id': '2', 'label': '2', 'size': 10, 'color': 'green'},
-#                   'position': {'x': 10, 'y': 10},
-#               },
-#               {
-#                   'data': {'id': '3', 'label': '3', 'size': 10, 'color': 'green'},
-#                   'position': {'x': 20, 'y': 20},
-#               },
-#               {
-#                   'data': {'id': '4', 'label': '4', 'size': 10, 'color': 'green'},
-#                   'position': {'x': 40, 'y': 40},
-#               },
-#               {
-#                   'data': {'id': '5', 'label': '5', 'size': 10, 'color': 'green'},
-#                   'position': {'x': 70, 'y': 70},
-#               }
-#              ]
-#        },
-#        'Big2': {
-#         'c': [
-#               {
-#                   'data': {'id': '1', 'label': '1', 'size': 10, 'color': str(colors[int(round(0.0, 2)*50)]), 'blacken': 0},
-#                   'position': {'x': 0, 'y': 0},
-#               },
-#               {
-#                   'data': {'id': '2', 'label': '2', 'size': 20, 'color': str(colors[int(round(0.1, 2)*50)]), 'blacken': 0.5},
-#                   'position': {'x': 10, 'y': 10},
-#               },
-#               {
-#                   'data': {'id': '3', 'label': '3', 'size': 40, 'color': str(colors[int(round(0.5, 2)*50)]), 'blacken': 1},
-#                   'position': {'x': 20, 'y': 20},
-#               },
-#               {
-#                   'data': {'id': '4', 'label': '4', 'size': 50, 'color': str(colors[int(round(0.7, 2)*50)])},
-#                   'position': {'x': 40, 'y': 40},
-#               },
-#               {
-#                   'data': {'id': '5', 'label': '5', 'size': 60, 'color': str(colors[int(round(1.0, 2)*50)])},
-#                   'position': {'x': 70, 'y': 70},
-#               }
-#              ],
-#         'D': [
-#               {
-#                   'data': {'id': '1', 'label': '1', 'size': 10, 'color': 'green'},
-#                   'position': {'x': 0, 'y': 0},
-#               },
-#               {
-#                   'data': {'id': '2', 'label': '2', 'size': 10, 'color': 'green'},
-#                   'position': {'x': 10, 'y': 10},
-#               },
-#               {
-#                   'data': {'id': '3', 'label': '3', 'size': 10, 'color': 'green'},
-#                   'position': {'x': 20, 'y': 20},
-#               },
-#               {
-#                   'data': {'id': '4', 'label': '4', 'size': 10, 'color': 'green'},
-#                   'position': {'x': 40, 'y': 40},
-#               },
-#               {
-#                   'data': {'id': '5', 'label': '5', 'size': 10, 'color': 'green'},
-#                   'position': {'x': 70, 'y': 70},
-#               }
-#              ]
-#        }
-#        }
-         
-
-
-
-#edges = {'1': [
-#               {
-#                   'data': {'source': '1', 'target': '2', 'weight': 1}
-#               },
-#               {
-#                   'data': {'source': '1', 'target': '5', 'weight': 10.0}
-#               },
-#               {
-#                   'data': {'source': '1', 'target': '3', 'weight': 3}
-#               },
-#               {
-#                   'data': {'source': '2', 'target': '5', 'weight': 4}
-#               },
-#               {
-#                   'data': {'source': '3', 'target': '4', 'weight': 20}
-#               }
-#              ],
-#         '2': [
-#               {
-#                   'data': {'source': '1', 'target': '4', 'weight': 1}
-#               },
-#               {
-#                   'data': {'source': '3', 'target': '5', 'weight': 1}
-#               },
-#               {
-#                   'data': {'source': '2', 'target': '3', 'weight': 1}
-#               },
-#               {
-#                   'data': {'source': '4', 'target': '5', 'weight': 1}
-#               },
-#               {
-#                   'data': {'source': '2', 'target': '4', 'weight': 1}
-#               }
-#             ]
-#        }
 
 l_condition = list(nodes.keys())
 l_samples = {}
@@ -174,8 +42,8 @@ styles = {
 app.layout = html.Div([
     dbc.Row(
         dbc.Col(
-            html.H1("Transcript Expression"),
-            width={'size':6, 'offset':4}
+            html.H1("ExpNet"),
+            width={'size':6, 'offset':5}
             )
        ),
     dcc.Tabs([
@@ -433,7 +301,24 @@ app.layout = html.Div([
                     )
                 ])
             ]),
-            dcc.Tab(label='Tab two', children=[])
+            dcc.Tab(label='Gene Expression [FPKM]', children=[
+                dbc.Row(
+                    dbc.Col(
+                        html.H3("Gene Expression"),
+                        width={'size':6, 'offset':5}
+                        )
+                   ),
+                dbc.Row(
+                    dbc.Col(
+                        dash_table.DataTable(    
+                                             data=gene_expression.to_dict('records'),
+                                             columns=[{'id': c, 'name': c} for c in gene_expression.columns],
+                                             style_cell={'textAlign': 'left'},
+                                             style_as_list_view=True,
+                                            )
+                        )
+                   ),
+            ])
         ]),
         html.Div(id="hidden-data-value", style=dict(display="none"), **{
           "data-value-1": "hello",
@@ -602,10 +487,6 @@ def get_image(get_png_clicks, get_svg_clicks):
         'type': ftype,
         'action': action
         }
-
-
-def main():
-    app.run_server(debug=True)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,8 @@
 #!/bin/env python
 
 import help_functions
+from numpy import std,mean
+import pandas as pd
 
 
 def read_expression(path, gene_id):
@@ -77,47 +79,27 @@ def main(expression_path, fas_path, sample_path, gene_id, colors):
     exp_stats, exp_percent, total = calc_percent(exp, sample_dict)
     fas_scores = read_fas_scores(fas_path, gene_id, ['normal', 'transmembrane'])
     nodes, edges = help_functions.prepare_network_data(exp_percent, fas_scores, sample_dict, colors)
-    return nodes, edges
+    table = make_expression_table(total, sample_dict)
+    return nodes, edges, table
     
-    
-    
 
-
-def plot(path, exp_stats, total, gene):
-    keys = ['ERR2856510', 'ERR2856511', 'ERR2856512', 'ERR2856513', 'ERR2856514', 'ERR2856515', 'ERR2856516', 'ERR2856517', 'ERR2856518', 'ERR2856519', 'ERR2856520', 'ERR4578910', 'ERR4578911']
-    df = pd.DataFrame(exp_stats)
-    labels = list(df.index)
-    titles = ['', '', 'R634Q#CRISPR', '', '', '', '', 'WT_NC_#no_CRISPR', '', '', '', '', 'WT#CRISPR_mock', '', '', '', '', 'P633L#CRISPR', '', '', ]
-    for key in keys:
-        titles.append(key + ': ' + str(total[key]))
-    fig = make_subplots(rows=4, cols=5, subplot_titles=titles, horizontal_spacing=0.0, vertical_spacing=0.1,
-                        specs=[[{"type": "domain"}, {"type": "domain"}, {"type": "domain"}, {"type": "domain"}, {"type": "domain"}],
-                               [{"type": "domain"}, {"type": "domain"}, {"type": "domain"}, {"type": "domain"}, {"type": "domain"}],
-                               [{"type": "domain"}, {"type": "domain"}, {"type": "domain"}, {"type": "domain"}, {"type": "domain"}],
-                               [{"type": "domain"}, {"type": "domain"}, {"type": "domain"}, {"type": "domain"}, {"type": "domain"}]])
-
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR2856510']), name='ERR2856510', textinfo='none', scalegroup='one'), 1, 1)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR2856511']), name='ERR2856511', textinfo='none', scalegroup='one'), 1, 2)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR2856512']), name='ERR2856512', textinfo='none', scalegroup='one'), 1, 3)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR2856513']), name='ERR2856513', textinfo='none', scalegroup='one'), 1, 4)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR2856514']), name='ERR2856514', textinfo='none', scalegroup='one'), 2, 2)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR2856515']), name='ERR2856515', textinfo='none', scalegroup='one'), 2, 3)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR2856516']), name='ERR2856516', textinfo='none', scalegroup='one'), 3, 1)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR2856517']), name='ERR2856517', textinfo='none', scalegroup='one'), 3, 2)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR2856518']), name='ERR2856518', textinfo='none', scalegroup='one'), 3, 3)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR2856519']), name='ERR2856519', textinfo='none', scalegroup='one'), 3, 4)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR2856520']), name='ERR2856520', textinfo='none', scalegroup='one'), 3, 5)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR4578910']), name='ERR4578910', textinfo='none', scalegroup='one'), 4, 2)
-    fig.add_trace(go.Pie(labels=labels, values=list(df['ERR4578911']), name='ERR4578911', textinfo='none', scalegroup='one'), 4, 3)
-#    a,b = 1,1
-#    for key in keys:
-#        fig.add_trace(go.Pie(labels=labels, values=list(df[key]), name=key, textinfo='none', scalegroup='one'), a, b)
-#        b += 1
-#        if b == 6:
-#            a += 1
-#            b = 1
-    fig.update_layout(title_text='Transcript Expression ' + gene)
-    fig.write_image(file=path + '.svg', width=1200, height=800)
-    fig.write_html(path + '.html')
-
+def make_expression_table(total, sample_dict):
+    table = {}
+    length = 0
+    for condition in sample_dict:
+        if length < len(sample_dict[condition]):
+            length = len(sample_dict[condition])
+    for condition in sample_dict:
+        table[condition] = []
+        for i in range(length+1):
+            table[condition].append('')
+        i = 0
+        l = []
+        for sample in sample_dict[condition]:
+            table[condition][i] = sample + f': {total[sample]:.5f}'
+            l.append(total[sample])
+            i += 1
+        table[condition].append(f'Mean: {mean(l):.5f}')
+    df = pd.DataFrame(table)
+    return df
 
