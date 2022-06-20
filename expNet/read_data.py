@@ -71,12 +71,12 @@ def calc_percent(expression, sample_dict):
     return exp_stats, exp_percent, total
 
 
-def main(expression_path, fas_path, sample_path, gene_id):
+def main(expression_path, fas_path, sample_path, gene_id, colors):
     exp = read_expression(expression_path, gene_id)
     sample_dict = read_sample_dict(sample_path)
     exp_stats, exp_percent, total = calc_percent(exp, sample_dict)
     fas_scores = read_fas_scores(fas_path, gene_id, ['normal', 'transmembrane'])
-    nodes, edges = prepare_network_data(exp_percent, fas_scores, sample_dict)
+    nodes, edges = help_functions.prepare_network_data(exp_percent, fas_scores, sample_dict, colors)
     return nodes, edges
     
     

@@ -38,22 +38,14 @@ setup(
     packages=find_packages(),
     package_data={'': ['*']},
     install_requires=[
-        'biopython',
-        'tqdm',
-        'graphviz',
-        'gnureadline'
+        'dash',
+        'dash_cytoscape',
+        'dash_bootstrap_components',
+        'colour',
+        'numpy'
     ],
     entry_points={
-        'console_scripts': ["fas.parseAnno = greedyFAS.annoFAS.annoParserFAS:main",
-                            "fas.doAnno = greedyFAS.annoFAS.annoFAS:main",
-                            "fas.checkAnno = greedyFAS.annoFAS.checkAnno:main",
-                            "fas.getProtByAnno = greedyFAS.annoFAS.getProtByAnno:main",
-                            "fas.setup = greedyFAS.setupFAS:main",
-                            "fas.run = greedyFAS.calcFAS:main",
-                            "fas.runFdogFas = greedyFAS.fdogFAS:main",
-                            "fas.calcComplexity = greedyFAS.complexityFAS:main",
-                            "fas.getDomains = greedyFAS.domainFAS:main",
-                            "fas.splitJson = greedyFAS.extractAnnoFAS:main"],
+        'console_scripts': ["expNet.run = expNet.app:main"],
     },
     license="GPL-3.0",
     classifiers=[

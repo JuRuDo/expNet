@@ -15,7 +15,7 @@ app = dash.Dash(__name__)
 
 
 colors = get_colorscale('green', 'yellow', 'red')
-nodes, edges = read_data.main(argv[1], argv[2], argv[3], argv[4]) # expression_path, fas_path, sample_path, gene_id
+nodes, edges = read_data.main(argv[1], argv[2], argv[3], argv[4], colors) # expression_path, fas_path, sample_path, gene_id
 
 
 #nodes = {'Big1': {
@@ -220,7 +220,7 @@ app.layout = html.Div([
                     cyto.Cytoscape(
                         id='cytoscape-A',
                         layout={'name': 'circle'},
-                        style={'width': '100%', 'height': '300px'},
+                        style={'width': '100%', 'height': '40vh'},
                         stylesheet = [
                             {
                                 'selector': 'node',
@@ -247,7 +247,7 @@ app.layout = html.Div([
                     cyto.Cytoscape(
                         id='cytoscape-B',
                         layout={'name': 'circle'},
-                        style={'width': '100%', 'height': '300px'},
+                        style={'width': '100%', 'height': '40vh'},
                         stylesheet = [
                             {
                                 'selector': 'node',
@@ -346,7 +346,7 @@ app.layout = html.Div([
                     cyto.Cytoscape(
                         id='cytoscape-C',
                         layout={'name': 'circle'},
-                        style={'width': '100%', 'height': '300px'},
+                        style={'width': '100%', 'height': '40vh'},
                         stylesheet = [
                             {
                                 'selector': 'node',
@@ -373,7 +373,7 @@ app.layout = html.Div([
                     cyto.Cytoscape(
                         id='cytoscape-D',
                         layout={'name': 'circle'},
-                        style={'width': '100%', 'height': '300px'},
+                        style={'width': '100%', 'height': '40vh'},
                         stylesheet = [
                             {
                                 'selector': 'node',
