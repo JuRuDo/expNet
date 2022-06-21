@@ -24,7 +24,7 @@ def prepare_network_data(exp_percent, fas_scores, sample_dict, colors):
                 if not node in nodes:
                     nodes.append(node)
             if not edge[0] == edge[1]:
-                edges[stype].append({'data': {'source': edge[0], 'target': edge[1], 'weight': fas_scores[stype][edge]*10+1}})
+                edges[stype].append({'data': {'source': edge[0], 'target': edge[1], 'weight': fas_scores[stype][edge]*5+1}})
     for condition in sample_dict:
         exp = {}
         data[condition] = {'mean': []}

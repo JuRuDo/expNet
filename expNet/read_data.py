@@ -5,8 +5,10 @@ from numpy import std,mean
 import pandas as pd
 
 
-def read_expression(path, gene_id):
+def read_expression(path, gene_ids):
     expression_dict = {}
+    for gene_id in gene_ids:
+        expression_dict[gene_id] = {}
     with open(path, 'r') as infile:
         line = infile.readline()
         cells = line.rstrip('\n').split('\t')
@@ -16,11 +18,11 @@ def read_expression(path, gene_id):
         line = infile.readline()
         while line:
             cells = line.rstrip('\n').split('\t')
-            if cells[0] == gene_id:
-                expression_dict[cells[1]] = {}
+            if cells[0] in gene_ids:
+                expression_dict[cells[0]][cells[1]] = {}
                 for i in range(2, 15):
                     scores = cells[i].split('/')
-                    expression_dict[cells[1]][indexsample[i]] = float(scores[1])
+                    expression_dict[cells[0]][cells[1]][indexsample[i]] = float(scores[1])
             line = infile.readline()
     return expression_dict
     
@@ -40,7 +42,7 @@ def read_fas_scores(path, gene_id, types):
     fas_scores = {}
     for stype in types:
         fas_scores[stype] = {}
-        with open(path + '/' + stype + '/' + gene_id + '.phyloprofile', 'r') as infile:
+        with open(path + '/' + gene_id + '/out/' + stype + '/' + gene_id + '.phyloprofile', 'r') as infile:
             line = infile.readline()
             line = infile.readline()
             while line:
@@ -48,6 +50,15 @@ def read_fas_scores(path, gene_id, types):
                 fas_scores[stype][(cells[0], cells[2])] = (float(cells[3]) + float(cells[4])) / 2
                 line = infile.readline()
     return fas_scores
+
+
+def read_gene_ids(path):
+    gene_ids = []
+    with open(path, 'r') as infile:
+        for line in infile.readlines():
+            gene_id = line.rstrip('\n')
+            gene_ids.append(gene_id)
+    return gene_ids
 
 
 def calc_percent(expression, sample_dict):
@@ -73,9 +84,14 @@ def calc_percent(expression, sample_dict):
     return exp_stats, exp_percent, total
 
 
-def main(expression_path, fas_path, sample_path, gene_id, colors):
-    exp = read_expression(expression_path, gene_id)
+def read_expression_data(expression_path, sample_path, gene_id_path):
+    gene_ids = read_gene_ids(gene_id_path)
+    exp = read_expression(expression_path, gene_ids)
     sample_dict = read_sample_dict(sample_path)
+    return exp, sample_dict, gene_ids
+
+
+def prepare_gene_data(fas_path, gene_id, exp, sample_dict, colors):
     exp_stats, exp_percent, total = calc_percent(exp, sample_dict)
     fas_scores = read_fas_scores(fas_path, gene_id, ['normal', 'transmembrane'])
     nodes, edges = help_functions.prepare_network_data(exp_percent, fas_scores, sample_dict, colors)
