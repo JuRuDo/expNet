@@ -45,7 +45,7 @@ setup(
         'numpy'
     ],
     entry_points={
-        'console_scripts': [],
+        'console_scripts': ["expNet.run = expNet.app:main"],
     },
     license="GPL-3.0",
     classifiers=[

@@ -1,6 +1,6 @@
 #!/bin/env python
 
-import help_functions
+from expNet import help_functions
 from numpy import std,mean
 import pandas as pd
 

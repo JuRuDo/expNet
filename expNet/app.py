@@ -6,13 +6,13 @@ from dash import dash_table
 from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
 from sys import argv
-from help_functions import get_colorscale
-import read_data
+from expNet.help_functions import get_colorscale
+from expNet import read_data
 
 
 cyto.load_extra_layouts()
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CERULEAN])
 
 
 colors = get_colorscale('green', 'yellow', 'red')
@@ -42,8 +42,8 @@ styles = {
 app.layout = html.Div([
     dbc.Row(
         dbc.Col(
-            html.H1("ExpNet"),
-            width={'size':6, 'offset':5}
+            html.H1("ExpNet", style={'textAlign': 'center'}),
+            width={'size':12}
             )
        ),
     dcc.Tabs([
@@ -304,8 +304,8 @@ app.layout = html.Div([
             dcc.Tab(label='Gene Expression [FPKM]', children=[
                 dbc.Row(
                     dbc.Col(
-                        html.H3("Gene Expression"),
-                        width={'size':6, 'offset':5}
+                        html.H3("Gene Expression", style={'textAlign': 'center'}),
+                        width={'size':12}
                         )
                    ),
                 dbc.Row(
@@ -489,5 +489,10 @@ def get_image(get_png_clicks, get_svg_clicks):
         }
 
 
-if __name__ == '__main__':
+def main():
     app.run_server(debug=True)
+
+
+if __name__ == '__main__':
+    main()
+
