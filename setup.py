@@ -42,7 +42,8 @@ setup(
         'dash_cytoscape',
         'dash_bootstrap_components',
         'colour',
-        'numpy'
+        'numpy',
+        'pandas'
     ],
     entry_points={
         'console_scripts': ["expNet.run = expNet.app:main"],
