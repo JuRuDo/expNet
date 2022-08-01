@@ -16,7 +16,8 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CERULEAN])
 
 
 colors = get_colorscale('green', 'yellow', 'red')
-exp, sample_dict, gene_ids = read_data.read_expression_data(argv[1], argv[2], argv[3]) # expression_path, sample_path, gene_id_path
+# expression_path, sample_path, gene_id_path
+exp, sample_dict, gene_ids = read_data.read_expression_data(argv[1], argv[2], argv[3])
 
 l_condition = list(sample_dict.keys())
 l_samples = {}
@@ -29,6 +30,7 @@ for condition in sample_dict:
         mock_nodes[condition][sample] = []
         l_samples[condition].append(sample)
 l_edges = ['normal', 'transmembrane']
+s_directions = ['Mean', 'Bidirectional']
 
 for edge in l_edges:
     mock_edges[edge] = []
@@ -58,7 +60,7 @@ app.layout = html.Div([
                     for name in gene_ids
                     ]
             )],
-            width={'size':12}
+            width={'size': 12}
             )
        ),
     dcc.Tabs([
@@ -75,36 +77,46 @@ app.layout = html.Div([
                             for name in l_condition
                             ]
                         ),
-                        html.Div("Sample"),
-                        dcc.Dropdown(
-                            id='dropdown-sample-A',
-                            value=l_samples[l_condition[0]][0],
-                            clearable=False,
-                            options=[
-                                {'label': name.capitalize(), 'value': name}
-                                for name in l_samples[l_condition[0]]
-                                ]
-                            ),
-                        html.Div("Edge weighting"),
-                        dcc.Dropdown(
-                            id='dropdown-edges-A',
-                            value=l_edges[0],
-                            clearable=False,
-                            options=[
-                                {'label': name.capitalize(), 'value': name}
-                                for name in l_edges
-                                ]
-                            ),
-                        html.Button("Download .png", id="btn-get-png-A"),
-                        html.Button("Download .svg", id="btn-get-svg-A")
-                        ], width={'size':2}
+                    html.Div("Sample"),
+                    dcc.Dropdown(
+                        id='dropdown-sample-A',
+                        value=l_samples[l_condition[0]][0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in l_samples[l_condition[0]]
+                            ]
+                        ),
+                    html.Div("Edge weighting"),
+                    dcc.Dropdown(
+                        id='dropdown-edges-A',
+                        value=l_edges[0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in l_edges
+                            ]
+                        ),
+                    html.Div("Scoring Display"),
+                    dcc.Dropdown(
+                        id='dropdown-s_direction-A',
+                        value=s_directions[0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in s_directions
+                        ]
+                    ),
+                    html.Button("Download .png", id="btn-get-png-A"),
+                    html.Button("Download .svg", id="btn-get-svg-A")
+                    ], width={'size': 2}
                     ),
                 dbc.Col(
                     cyto.Cytoscape(
                         id='cytoscape-A',
                         layout={'name': 'circle'},
                         style={'width': '100%', 'height': '40vh'},
-                        stylesheet = [
+                        stylesheet=[
                             {
                                 'selector': 'node',
                                 'style': {
@@ -124,14 +136,14 @@ app.layout = html.Div([
                             }
                         ],
                         elements=[]
-                        ), width={'size':4}
+                        ), width={'size': 4}
                     ),
                 dbc.Col(
                     cyto.Cytoscape(
                         id='cytoscape-B',
                         layout={'name': 'circle'},
                         style={'width': '100%', 'height': '40vh'},
-                        stylesheet = [
+                        stylesheet=[
                             {
                                 'selector': 'node',
                                 'style': {
@@ -151,7 +163,7 @@ app.layout = html.Div([
                             }
                         ],
                         elements=[]
-                        ), width={'size':4}
+                        ), width={'size': 4}
                     ),
                 dbc.Col([
                     html.Div("Condition"),
@@ -164,30 +176,40 @@ app.layout = html.Div([
                             for name in l_condition
                             ]
                         ),
-                        html.Div("Sample"),
-                        dcc.Dropdown(
-                            id='dropdown-sample-B',
-                            value=l_samples[l_condition[0]][0],
-                            clearable=False,
-                            options=[
-                                {'label': name.capitalize(), 'value': name}
-                                for name in l_samples[l_condition[0]]
-                                ]
-                            ),
-                        html.Div("Edge weighting"),
-                        dcc.Dropdown(
-                            id='dropdown-edges-B',
-                            value=l_edges[0],
-                            clearable=False,
-                            options=[
-                                {'label': name.capitalize(), 'value': name}
-                                for name in l_edges
-                                ]
-                            ),
-                        html.Button("Download .png", id="btn-get-png-B"),
-                        html.Button("Download .svg", id="btn-get-svg-B")
-                        ], width={'size':2}
-                    )
+                    html.Div("Sample"),
+                    dcc.Dropdown(
+                        id='dropdown-sample-B',
+                        value=l_samples[l_condition[0]][0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in l_samples[l_condition[0]]
+                            ]
+                        ),
+                    html.Div("Edge weighting"),
+                    dcc.Dropdown(
+                        id='dropdown-edges-B',
+                        value=l_edges[0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in l_edges
+                            ]
+                        ),
+                    html.Div("Scoring Display"),
+                    dcc.Dropdown(
+                        id='dropdown-s_direction-B',
+                        value=s_directions[0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in s_directions
+                        ]
+                    ),
+                    html.Button("Download .png", id="btn-get-png-B"),
+                    html.Button("Download .svg", id="btn-get-svg-B")
+                    ], width={'size': 2}
+                )
                 ]),
             dbc.Row([
                 dbc.Col([
@@ -201,36 +223,46 @@ app.layout = html.Div([
                             for name in l_condition
                             ]
                         ),
-                        html.Div("Sample"),
-                        dcc.Dropdown(
-                            id='dropdown-sample-C',
-                            value=l_samples[l_condition[0]][0],
-                            clearable=False,
-                            options=[
-                                {'label': name.capitalize(), 'value': name}
-                                for name in l_samples[l_condition[0]]
-                                ]
-                            ),
-                        html.Div("Edge weighting"),
-                        dcc.Dropdown(
-                            id='dropdown-edges-C',
-                            value=l_edges[0],
-                            clearable=False,
-                            options=[
-                                {'label': name.capitalize(), 'value': name}
-                                for name in l_edges
-                                ]
-                            ),
-                        html.Button("Download .png", id="btn-get-png-C"),
-                        html.Button("Download .svg", id="btn-get-svg-C")
-                        ], width={'size':2}
+                    html.Div("Sample"),
+                    dcc.Dropdown(
+                        id='dropdown-sample-C',
+                        value=l_samples[l_condition[0]][0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in l_samples[l_condition[0]]
+                            ]
+                        ),
+                    html.Div("Edge weighting"),
+                    dcc.Dropdown(
+                        id='dropdown-edges-C',
+                        value=l_edges[0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in l_edges
+                            ]
+                        ),
+                    html.Div("Scoring Display"),
+                    dcc.Dropdown(
+                        id='dropdown-s_direction-C',
+                        value=s_directions[0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in s_directions
+                        ]
                     ),
+                    html.Button("Download .png", id="btn-get-png-C"),
+                    html.Button("Download .svg", id="btn-get-svg-C")
+                    ], width={'size': 2}
+                ),
                 dbc.Col(
                     cyto.Cytoscape(
                         id='cytoscape-C',
                         layout={'name': 'circle'},
                         style={'width': '100%', 'height': '40vh'},
-                        stylesheet = [
+                        stylesheet=[
                             {
                                 'selector': 'node',
                                 'style': {
@@ -250,14 +282,14 @@ app.layout = html.Div([
                             }
                         ],
                         elements=[]
-                        ), width={'size':4}
+                        ), width={'size': 4}
                     ),
                 dbc.Col(
                     cyto.Cytoscape(
                         id='cytoscape-D',
                         layout={'name': 'circle'},
                         style={'width': '100%', 'height': '40vh'},
-                        stylesheet = [
+                        stylesheet=[
                             {
                                 'selector': 'node',
                                 'style': {
@@ -277,7 +309,7 @@ app.layout = html.Div([
                             }
                         ],
                         elements=[]
-                        ), width={'size':4}
+                        ), width={'size': 4}
                     ),
                 dbc.Col([
                     html.Div("Condition"),
@@ -290,59 +322,69 @@ app.layout = html.Div([
                             for name in l_condition
                             ]
                         ),
-                        html.Div("Sample"),
-                        dcc.Dropdown(
-                            id='dropdown-sample-D',
-                            value=l_samples[l_condition[0]][0],
-                            clearable=False,
-                            options=[
-                                {'label': name.capitalize(), 'value': name}
-                                for name in l_samples[l_condition[0]]
-                                ]
-                            ),
-                        html.Div("Edge weighting"),
-                        dcc.Dropdown(
-                            id='dropdown-edges-D',
-                            value=l_edges[0],
-                            clearable=False,
-                            options=[
-                                {'label': name.capitalize(), 'value': name}
-                                for name in l_edges
-                                ]
-                            ),
-                        html.Button("Download .png", id="btn-get-png-D"),
-                        html.Button("Download .svg", id="btn-get-svg-D")
-                        ], width={'size':2}
-                    )
+                    html.Div("Sample"),
+                    dcc.Dropdown(
+                        id='dropdown-sample-D',
+                        value=l_samples[l_condition[0]][0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in l_samples[l_condition[0]]
+                            ]
+                        ),
+                    html.Div("Edge weighting"),
+                    dcc.Dropdown(
+                        id='dropdown-edges-D',
+                        value=l_edges[0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in l_edges
+                            ]
+                        ),
+                    html.Div("Scoring Display"),
+                    dcc.Dropdown(
+                        id='dropdown-s_direction-D',
+                        value=s_directions[0],
+                        clearable=False,
+                        options=[
+                            {'label': name.capitalize(), 'value': name}
+                            for name in s_directions
+                        ]
+                    ),
+                    html.Button("Download .png", id="btn-get-png-D"),
+                    html.Button("Download .svg", id="btn-get-svg-D")
+                    ], width={'size': 2}
+                )
                 ])
             ]),
-            dcc.Tab(label='Gene Expression [FPKM]', children=[
-                dbc.Row(
-                    dbc.Col(
-                        html.H3("Gene Expression", style={'textAlign': 'center'}),
-                        width={'size':12}
-                        )
-                   ),
-                dbc.Row(
-                    dbc.Col(
-                        dash_table.DataTable(
-                                             id='expression-table',
-                                             data={},
-                                             columns=[],
-                                             style_cell={'textAlign': 'left'},
-                                             style_as_list_view=True,
-                                            )
-                        )
-                   ),
-            ])
-        ]),
-        html.Div(id="hidden-data-value", style=dict(display="none"), **{
+        dcc.Tab(label='Gene Expression [FPKM]', children=[
+            dbc.Row(
+                dbc.Col(
+                    html.H3("Gene Expression", style={'textAlign': 'center'}),
+                    width={'size': 12}
+                )
+            ),
+            dbc.Row(
+                dbc.Col(
+                    dash_table.DataTable(
+                                         id='expression-table',
+                                         data={},
+                                         columns=[],
+                                         style_cell={'textAlign': 'left'},
+                                         style_as_list_view=True,
+                                        )
+                )
+            ),
+        ])
+    ]),
+    html.Div(id="hidden-data-value", style=dict(display="none"), **{
           "data-value-1": "hello",
           "data-value-2": "false"
-        }),
-        dcc.Store(id='nodes-store', data=mock_nodes),
-        dcc.Store(id='edges-store', data=mock_edges)
-    ])
+    }),
+    dcc.Store(id='nodes-store', data=mock_nodes),
+    dcc.Store(id='edges-store', data=mock_edges)
+])
 
 
 # Choose Gene Callback
@@ -356,11 +398,13 @@ app.layout = html.Div([
                Output('dropdown-condition-D', 'value')],
               Input('dropdown-genes', 'value'))
 def update_gene(gene_id):
-    nodes, edges, gene_expression = read_data.prepare_gene_data(argv[4], gene_id, exp[gene_id], sample_dict, colors) # fas_path
+    # fas_path
+    nodes, edges, gene_expression = read_data.prepare_gene_data(argv[4], gene_id, exp[gene_id], sample_dict, colors)
     x = l_condition
     while len(x) < 4:
         x = x + x
-    return nodes, edges, gene_expression.to_dict('records'), [{'id': c, 'name': c} for c in gene_expression.columns], x[0], x[1], x[2], x[3]
+    return (nodes, edges, gene_expression.to_dict('records'),
+            [{'id': c, 'name': c} for c in gene_expression.columns], x[0], x[1], x[2], x[3])
 
 
 # Choose Condition Callbacks
@@ -368,34 +412,37 @@ def update_gene(gene_id):
                Output('dropdown-sample-A', 'value')],
               Input('dropdown-condition-A', 'value'))
 def update_samples(value):
-    options=[
+    options = [
             {'label': name.capitalize(), 'value': name}
             for name in l_samples[value]
             ]
     new_value = l_samples[value][0]
     return options, new_value
+
 
 @app.callback([Output('dropdown-sample-B', 'options'), 
                Output('dropdown-sample-B', 'value')],
               Input('dropdown-condition-B', 'value'))
 def update_samples(value):
-    options=[
+    options = [
             {'label': name.capitalize(), 'value': name}
             for name in l_samples[value]
             ]
     new_value = l_samples[value][0]
     return options, new_value
 
+
 @app.callback([Output('dropdown-sample-C', 'options'), 
                Output('dropdown-sample-C', 'value')],
               Input('dropdown-condition-C', 'value'))
 def update_samples(value):
-    options=[
+    options = [
             {'label': name.capitalize(), 'value': name}
             for name in l_samples[value]
             ]
     new_value = l_samples[value][0]
     return options, new_value
+
 
 @app.callback([Output('dropdown-sample-D', 'options'), 
                Output('dropdown-sample-D', 'value')],
@@ -420,6 +467,7 @@ def update_samples(sample, edge, condition, nodes, edges):
     elements = nodes[condition][sample] + edges[edge]
     return elements
 
+
 @app.callback(Output('cytoscape-B', 'elements'),
               [Input('dropdown-sample-B', 'value'),
                Input('dropdown-edges-B', 'value')],
@@ -430,6 +478,7 @@ def update_samples(sample, edge, condition, nodes, edges):
     elements = nodes[condition][sample] + edges[edge]
     return elements
 
+
 @app.callback(Output('cytoscape-C', 'elements'),
               [Input('dropdown-sample-C', 'value'),
                Input('dropdown-edges-C', 'value')],
@@ -439,6 +488,7 @@ def update_samples(sample, edge, condition, nodes, edges):
 def update_samples(sample, edge, condition, nodes, edges):
     elements = nodes[condition][sample] + edges[edge]
     return elements
+
 
 @app.callback(Output('cytoscape-D', 'elements'),
               [Input('dropdown-sample-D', 'value'),
@@ -472,6 +522,7 @@ def get_image(get_png_clicks, get_svg_clicks):
         'action': action
         }
 
+
 @app.callback(
     Output("cytoscape-B", "generateImage"),
     [
@@ -492,6 +543,7 @@ def get_image(get_png_clicks, get_svg_clicks):
         'action': action
         }
 
+
 @app.callback(
     Output("cytoscape-C", "generateImage"),
     [
@@ -511,6 +563,7 @@ def get_image(get_png_clicks, get_svg_clicks):
         'type': ftype,
         'action': action
         }
+
 
 @app.callback(
     Output("cytoscape-D", "generateImage"),

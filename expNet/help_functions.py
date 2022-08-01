@@ -2,6 +2,7 @@
 
 from colour import Color
 from numpy import std, mean
+import numpy as np
 
 def get_colorscale(start, mid, stop):
     green = Color(start)
@@ -24,7 +25,7 @@ def prepare_network_data(exp_percent, fas_scores, sample_dict, colors):
                 if not node in nodes:
                     nodes.append(node)
             if not edge[0] == edge[1]:
-                edges[stype].append({'data': {'source': edge[0], 'target': edge[1], 'weight': fas_scores[stype][edge]*5+1}})
+                edges[stype].append({'data': {'source': edge[0], 'target': edge[1], 'weight': fas_scores[stype][edge][0]*5+1}})
     for condition in sample_dict:
         exp = {}
         data[condition] = {'mean': []}
@@ -56,4 +57,13 @@ def prepare_network_data(exp_percent, fas_scores, sample_dict, colors):
             data[condition]['mean'].append({'data': {'id': node, 'label': node, 'size': meanexp, 'color': str(colors[stdexp]), 'blacken': blacken}, 'position': {'x': 20*x, 'y': 20*x}})
             x += 1
     return data, edges
+
+
+def circle_points(radius, points):
+    t = np.linspace(0, 2*np.pi, points, endpoint=False)
+    x = radius * np.cos(t)
+    y = radius * np.sin(t)
+    circle = np.c_[x, y]
+    return circle
+
 

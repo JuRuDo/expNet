@@ -47,7 +47,8 @@ def read_fas_scores(path, gene_id, types):
             line = infile.readline()
             while line:
                 cells = line.rstrip('\n').split('\t')
-                fas_scores[stype][(cells[0], cells[2])] = (float(cells[3]) + float(cells[4])) / 2
+                fas_scores[stype][(cells[0], cells[2])] = ((float(cells[3]) + float(cells[4])) / 2, float(cells[3]),
+                                                           float(cells[4]))
                 line = infile.readline()
     return fas_scores
 
